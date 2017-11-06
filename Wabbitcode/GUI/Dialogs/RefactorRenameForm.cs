@@ -81,13 +81,6 @@ namespace Revsoft.Wabbitcode.GUI.Dialogs
 
                 document.UndoStack.EndUndoGroup();
             }
-
-            foreach (var editor in _editors)
-            {
-                editor.Value.Dispose();
-            }
-
-            _editors.Clear();
         }
 
         private void SetupPreview()

@@ -120,39 +120,46 @@ namespace Revsoft.Wabbitcode.Services.Project
 
         public bool Build(IProject project)
         {
-            IAssembler assembler = _assemblerFactory.CreateAssembler();
-            AssemblerHelper.SetupAssembler(assembler, _inputFile, _outputFile, project.ProjectDirectory, project.IncludeDirs);
-
             AssemblerOutput output;
-            string outputString;
-            switch (_stepType)
+            using (IAssembler assembler = _assemblerFactory.CreateAssembler())
             {
-                case BuildStepType.All:
-                    outputString = assembler.Assemble(AssemblyFlags.Normal | AssemblyFlags.SymbolTable | AssemblyFlags.List);
-                    output = new AssemblerOutput(outputString, !outputString.Contains("error") && !outputString.Contains("Couldn't"));
-                    project.BuildSystem.ProjectOutput = _outputFile;
-                    project.BuildSystem.ListOutput = _outputFile.ChangeExtension("lst");
-                    project.BuildSystem.LabelOutput = _outputFile.ChangeExtension("lab");
-                    break;
-                case BuildStepType.Assemble:
-                    outputString = assembler.Assemble(AssemblyFlags.Normal);
-                    output = new AssemblerOutput(outputString, !outputString.Contains("error") && !outputString.Contains("Couldn't"));
-                    project.BuildSystem.ProjectOutput = _outputFile;
-                    break;
-                case BuildStepType.Listing:
-                    outputString = assembler.Assemble(AssemblyFlags.Normal | AssemblyFlags.List);
-                    output = new AssemblerOutput(outputString, !outputString.Contains("error") && !outputString.Contains("Couldn't"));
-                    project.BuildSystem.ListOutput = _outputFile.ChangeExtension("lst");
-                    break;
-                case BuildStepType.SymbolTable:
-                    outputString = assembler.Assemble(AssemblyFlags.Normal | AssemblyFlags.SymbolTable);
-                    output = new AssemblerOutput(outputString, !outputString.Contains("error") && !outputString.Contains("Couldn't"));
-                    project.BuildSystem.LabelOutput = _outputFile.ChangeExtension("lab");
-                    break;
-                default:
-                    throw new InvalidOperationException("Unknown step type");
-            }
+                AssemblerHelper.SetupAssembler(assembler, _inputFile, _outputFile, project.ProjectDirectory,
+                    project.IncludeDirs);
 
+                string outputString;
+                switch (_stepType)
+                {
+                    case BuildStepType.All:
+                        outputString =
+                            assembler.Assemble(AssemblyFlags.Normal | AssemblyFlags.SymbolTable | AssemblyFlags.List);
+                        output = new AssemblerOutput(outputString,
+                            !outputString.Contains("error") && !outputString.Contains("Couldn't"));
+                        project.BuildSystem.ProjectOutput = _outputFile;
+                        project.BuildSystem.ListOutput = _outputFile.ChangeExtension("lst");
+                        project.BuildSystem.LabelOutput = _outputFile.ChangeExtension("lab");
+                        break;
+                    case BuildStepType.Assemble:
+                        outputString = assembler.Assemble(AssemblyFlags.Normal);
+                        output = new AssemblerOutput(outputString,
+                            !outputString.Contains("error") && !outputString.Contains("Couldn't"));
+                        project.BuildSystem.ProjectOutput = _outputFile;
+                        break;
+                    case BuildStepType.Listing:
+                        outputString = assembler.Assemble(AssemblyFlags.Normal | AssemblyFlags.List);
+                        output = new AssemblerOutput(outputString,
+                            !outputString.Contains("error") && !outputString.Contains("Couldn't"));
+                        project.BuildSystem.ListOutput = _outputFile.ChangeExtension("lst");
+                        break;
+                    case BuildStepType.SymbolTable:
+                        outputString = assembler.Assemble(AssemblyFlags.Normal | AssemblyFlags.SymbolTable);
+                        output = new AssemblerOutput(outputString,
+                            !outputString.Contains("error") && !outputString.Contains("Couldn't"));
+                        project.BuildSystem.LabelOutput = _outputFile.ChangeExtension("lab");
+                        break;
+                    default:
+                        throw new InvalidOperationException("Unknown step type");
+                }
+            }
             _outputText = output.OutputText;
             return output.Succeeded;
         }

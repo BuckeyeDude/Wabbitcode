@@ -64,6 +64,7 @@ namespace Revsoft.Wabbitcode.Services
             catch (DebuggingException)
             {
                 EndDebugging();
+                throw;
             }
         }
 

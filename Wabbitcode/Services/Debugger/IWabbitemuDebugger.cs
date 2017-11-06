@@ -13,6 +13,8 @@ namespace Revsoft.Wabbitcode.Services.Debugger
         event BreakpointEventHandler OnBreakpoint;
         event CloseEventHandler OnClose;
 
+        Wabbitemu Debugger { get; }
+
         ITIApplicationCollection Apps { get; }
 
         IZ80 CPU { get; }

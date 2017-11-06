@@ -31,10 +31,11 @@ namespace MapEditorPlugin
 
             _projectService.ProjectOpened += ProjectService_ProjectOpened;
 
+            Initialize();
 
             if (_projectService.Project != null)
             {
-                Initialize();
+                MapEditorControl.ZeldaFolder = _projectService.Project.ProjectDirectory;
             }
         }
 
@@ -45,12 +46,11 @@ namespace MapEditorPlugin
                 return;
             }
 
-            Initialize();
+            MapEditorControl.ZeldaFolder = _projectService.Project.ProjectDirectory;
         }
 
         private void Initialize()
         {
-            MapEditorControl.ZeldaFolder = _projectService.Project.ProjectDirectory;
             var fileTypeFactory = DependencyFactory.Resolve<IFileTypeMethodFactory>();
             fileTypeFactory.RegisterFileType(".zmap", MapFileEditor.OpenDocument);
             _dockingService.ActiveDocumentChanged += DockingService_ActiveDocumentChanged;

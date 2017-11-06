@@ -40,10 +40,12 @@ namespace Revsoft.Wabbitcode.Services
         public AssemblerOutput AssembleFile(FilePath inputFile, FilePath outputFile, FilePath originalDir,
             IEnumerable<FilePath> includeDirs, AssemblyFlags flags = AssemblyFlags.Normal)
         {
-            IAssembler assembler = _assemblerFactory.CreateAssembler();
-
-            AssemblerHelper.SetupAssembler(assembler, inputFile, outputFile, originalDir, includeDirs);
-            string rawOutput = assembler.Assemble(flags);
+            string rawOutput;
+            using (IAssembler assembler = _assemblerFactory.CreateAssembler())
+            {
+                AssemblerHelper.SetupAssembler(assembler, inputFile, outputFile, originalDir, includeDirs);
+                rawOutput = assembler.Assemble(flags);
+            }
 
             // lets write it to the output window so the user knows whats happening
             string outputText = string.Format(OutputFormatting, Path.GetFileName(inputFile), inputFile, rawOutput);
@@ -63,13 +65,13 @@ namespace Revsoft.Wabbitcode.Services
                 succeeded = project.BuildSystem.Build();
             }
 
-            if (succeeded && !string.IsNullOrEmpty(project.BuildSystem.ListOutput))
+            if (!string.IsNullOrEmpty(project.BuildSystem.ListOutput))
             {
                 string fileText = _fileService.GetFileText(project.BuildSystem.ListOutput);
                 _symbolService.ParseListFile(fileText);
             }
 
-            if (succeeded && !string.IsNullOrEmpty(project.BuildSystem.LabelOutput))
+            if (!string.IsNullOrEmpty(project.BuildSystem.LabelOutput))
             {
                 string fileText = _fileService.GetFileText(project.BuildSystem.LabelOutput);
                 _symbolService.ParseSymbolFile(fileText);
@@ -83,11 +85,14 @@ namespace Revsoft.Wabbitcode.Services
             int size;
             int min;
             int max;
-            IAssembler assembler = _assemblerFactory.CreateAssembler();
+
             string outputLines = null;
-            if (!string.IsNullOrEmpty(lines))
+            using (IAssembler assembler = _assemblerFactory.CreateAssembler())
             {
-                outputLines = assembler.Assemble(lines, AssemblyFlags.CodeCounter | AssemblyFlags.Commandline);
+                if (!string.IsNullOrEmpty(lines))
+                {
+                    outputLines = assembler.Assemble(lines, AssemblyFlags.CodeCounter | AssemblyFlags.Commandline);
+                }
             }
 
             if (string.IsNullOrEmpty(outputLines))

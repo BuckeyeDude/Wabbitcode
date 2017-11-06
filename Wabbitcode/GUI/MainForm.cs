@@ -177,6 +177,7 @@ namespace Revsoft.Wabbitcode.GUI
             fileTypeMethodFactory.RegisterFileType(".inc", path => DocumentWindows.TextEditor.OpenDocument(path) != null);
             fileTypeMethodFactory.RegisterFileType(".bmp", path => ImageViewer.OpenImage(path) != null);
             fileTypeMethodFactory.RegisterFileType(".png", path => ImageViewer.OpenImage(path) != null);
+            fileTypeMethodFactory.RegisterFileType(".gif", path => ImageViewer.OpenImage(path) != null);
             fileTypeMethodFactory.RegisterDefaultHandler(path => DocumentWindows.TextEditor.OpenDocument(path) != null); 
 
             _dockingService.LoadConfig(GetContentFromPersistString);

@@ -22,6 +22,7 @@ namespace Revsoft.Wabbitcode.GUI.Menus
 {
     internal sealed class MainMenuStrip : MenuStrip
     {
+        private const int MaxRecentFiles = 10;
         private const Image NoIcon = null;
 
         #region File Menu Items
@@ -641,14 +642,11 @@ namespace Revsoft.Wabbitcode.GUI.Menus
             UpdateMenuItem.Click += updateMenuItem_Click;
             AboutMenuItem.Click += aboutMenuItem_Click;
 
-            Task.Factory.StartNew(() =>
+            foreach (string file in GetRecentFiles())
             {
-                foreach (string file in GetRecentFiles())
-                {
-                    string fileCopy = file;
-                    this.BeginInvoke(() => AddRecentItem(fileCopy));
-                }
-            });
+                string fileCopy = file;
+                AddRecentItem(fileCopy);
+            }
         }
 
         /// <summary>
@@ -768,6 +766,14 @@ namespace Revsoft.Wabbitcode.GUI.Menus
             if (Settings.Default.RecentFiles == null)
             {
                 Settings.Default.RecentFiles = new StringCollection();
+            }
+
+            if (Settings.Default.RecentFiles.Count > MaxRecentFiles)
+            {
+                for (int i = Settings.Default.RecentFiles.Count - 1; i >= MaxRecentFiles; i--)
+                {
+                    Settings.Default.RecentFiles.RemoveAt(i);
+                }
             }
 
             return Settings.Default.RecentFiles.Cast<string>().Where(s => !string.IsNullOrEmpty(s));

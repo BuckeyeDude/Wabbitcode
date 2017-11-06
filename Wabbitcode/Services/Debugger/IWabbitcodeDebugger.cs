@@ -47,6 +47,7 @@ namespace Revsoft.Wabbitcode.Services.Debugger
         Stack<CallStackEntry> CallStack { get; }
         IZ80 CPU { get; }
         Image ScreenImage { get; }
+        Wabbitemu NativeDebugger { get; }
 
         void StartDebug();
         void EndDebug();

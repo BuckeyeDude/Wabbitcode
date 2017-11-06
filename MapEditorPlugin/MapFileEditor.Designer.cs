@@ -21,6 +21,9 @@ namespace MapEditorPlugin
             {
                 components.Dispose();
             }
+
+            _debuggerService.OnDebuggingStarted -= DebuggerService_OnDebuggingStarted;
+            _debuggerService.OnDebuggingEnded -= DebuggerService_OnDebuggingEnded;
             base.Dispose(disposing);
         }
 

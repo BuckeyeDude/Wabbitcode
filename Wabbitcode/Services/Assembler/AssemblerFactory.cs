@@ -9,7 +9,10 @@
     {
         public IAssembler CreateAssembler()
         {
-            return new SpasmComAssembler();
+            lock (this)
+            {
+                return new SpasmExeAssembler();
+            }
         }
     }
 }

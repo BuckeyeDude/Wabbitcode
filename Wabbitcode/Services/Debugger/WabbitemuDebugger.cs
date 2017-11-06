@@ -68,6 +68,11 @@ namespace Revsoft.Wabbitcode.Services.Debugger
         public event BreakpointEventHandler OnBreakpoint;
         public event CloseEventHandler OnClose;
 
+        public Wabbitemu Debugger
+        {
+            get { return _debugger; }
+        }
+
         public ITIApplicationCollection Apps
         {
             get { return _debugger.Apps; }

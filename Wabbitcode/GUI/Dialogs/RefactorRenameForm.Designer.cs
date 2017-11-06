@@ -17,6 +17,14 @@
             {
                 components.Dispose();
             }
+
+            foreach (var editor in _editors)
+            {
+                editor.Value.Dispose();
+            }
+
+            _editors.Clear();
+
             base.Dispose(disposing);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Revsoft.Wabbitcode.Services.Symbols;
 using Revsoft.Wabbitcode.Utils;
 using WabbitemuLib;
 
@@ -38,12 +39,13 @@ namespace Revsoft.Wabbitcode.Services.Debugger
     {
         private readonly List<BreakCondition> _breakConditions = new List<BreakCondition>();
 
-        public ushort Address { get; set; }
+        public ushort Address { get; private set; }
+        public byte Page { get; private set; }
         public bool Enabled { get; set; }
         public FilePath File { get; set; }
         public HitCountEnum HitCountCondition { get; set; }
         public int HitCountConditionNumber { get; set; }
-        public bool IsRam { get; set; }
+        public bool IsRam { get; private set; }
 
         public List<BreakCondition> BreakConditions
         {
@@ -52,8 +54,8 @@ namespace Revsoft.Wabbitcode.Services.Debugger
 
         public readonly int LineNumber;
         public int NumberOfTimesHit;
-        public byte Page;
         public IBreakpoint WabbitemuBreakpoint;
+        private bool _isAddressValid;
 
         private WabbitcodeBreakpoint()
         {
@@ -95,7 +97,7 @@ namespace Revsoft.Wabbitcode.Services.Debugger
             }
 
             WabbitcodeBreakpoint break2 = obj as WabbitcodeBreakpoint;
-            return (Address == break2.Address && Page == break2.Page && IsRam == break2.IsRam) ||
+            return (_isAddressValid && Address == break2.Address && Page == break2.Page && IsRam == break2.IsRam) ||
                    (string.Equals(File, break2.File, StringComparison.OrdinalIgnoreCase) && LineNumber == break2.LineNumber);
         }
 
@@ -189,6 +191,19 @@ namespace Revsoft.Wabbitcode.Services.Debugger
             }
 
             return isTrue;
+        }
+
+        internal void UpdateAddress(CalcLocation location)
+        {
+            if (location != null)
+            {
+                Page = location.Page;
+                Address = location.Address;
+                IsRam = location.IsRam;
+                _isAddressValid = true;
+            } else {
+                _isAddressValid = false;
+            }
         }
     }
 }

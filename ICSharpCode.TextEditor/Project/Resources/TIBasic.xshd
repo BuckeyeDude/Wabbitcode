@@ -78,7 +78,7 @@
 			<KeyWords name="Commands" bold="false" italic="false" color="#999999">
 				<Key word="Pause" />
 				<Key word="IS>" />
-				<Key word="DS<" />
+				<Key word="DS&lt;" />
 				<Key word="Menu" />
 				<Key word="prgm" />
 				<Key word="Return" />

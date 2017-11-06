@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Revsoft.Wabbitcode.Extensions;
-using Revsoft.Wabbitcode.Properties;
 using Revsoft.Wabbitcode.Services.Interfaces;
 using Revsoft.Wabbitcode.Utils;
 
@@ -42,11 +41,6 @@ namespace Revsoft.Wabbitcode.GUI.DocumentWindows
             };
 
             doc.OpenFile(fileName);
-
-            if (!Settings.Default.RecentFiles.Contains(fileName))
-            {
-                Settings.Default.RecentFiles.Add(fileName);
-            }
 
             dockingService.ShowDockPanel(doc);
             return doc;

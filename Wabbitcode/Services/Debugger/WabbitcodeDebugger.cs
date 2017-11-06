@@ -50,6 +50,11 @@ namespace Revsoft.Wabbitcode.Services.Debugger
 
         private string CurrentDebuggingFile { get; set; }
 
+        public Wabbitemu NativeDebugger
+        {
+            get { return _debugger.Debugger; }
+        }
+
         public IZ80 CPU
         {
             get { return _debugger.CPU; }
@@ -216,8 +221,15 @@ namespace Revsoft.Wabbitcode.Services.Debugger
                 return;
             }
 
+            _debugger.OnBreakpoint -= BreakpointHit;
             _debugger.EndDebug();
+            _debugger.Dispose();
             _debugger = null;
+
+            foreach (var breakpoint in WabbitcodeBreakpointManager.Breakpoints)
+            {
+                breakpoint.UpdateAddress(null);
+            }
         }
 
         private void DebuggerOnClose(object sender, EventArgs eventArgs)
@@ -583,9 +595,7 @@ namespace Revsoft.Wabbitcode.Services.Debugger
                 return true;
             }
 
-            newBreakpoint.Page = location.Page;
-            newBreakpoint.Address = location.Address;
-            newBreakpoint.IsRam = location.IsRam;
+            newBreakpoint.UpdateAddress(location);
             byte page = location.IsRam ? location.Page : (byte) (_appPage - newBreakpoint.Page);
             newBreakpoint.WabbitemuBreakpoint = _debugger.SetBreakpoint(newBreakpoint.IsRam,
                 page, newBreakpoint.Address);
